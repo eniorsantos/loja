@@ -9,6 +9,7 @@ import {
   delcategoria,
 } from './home/categorias';
 import { register, authenticate } from './autrhorizaton/authController';
+import { jwtverify } from '../src/middle/security';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -28,7 +29,7 @@ app.listen(3333, () => {
 
 // GERENCIA AUTOR
 
-app.get('/autor', autor);
+app.get('/autor', jwtverify, autor);
 
 app.post('/cadautor', cadautor);
 
@@ -38,9 +39,9 @@ app.delete('/delautor', delautor);
 
 //GERENCIA CATEGORIA
 
-app.get('/categoria', categoria);
+app.get('/categoria', jwtverify, categoria);
 
-app.post('/cadcategoria', cadcategoria);
+app.post('/cadcategoria', jwtverify, cadcategoria);
 
 app.put('/atucategoria', atucategoria);
 
@@ -48,9 +49,9 @@ app.delete('/delcategoria', delcategoria);
 
 // GERENCIA LIVRO
 
-app.get('/livro', livro);
+app.get('/livro', jwtverify, livro);
 
-app.post('/cadastro', cadastro);
+app.post('/cadastro', jwtverify, cadastro);
 
 app.put('/atualizacad', atualizacad);
 

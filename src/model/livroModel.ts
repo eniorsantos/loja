@@ -24,6 +24,11 @@ const livroSchema = new Schema({
     ref: 'Categoria',
     required: true,
   },
+  usuario:{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 },
 { timestamps: true }
 );
