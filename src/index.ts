@@ -1,5 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import {initializeApp} from "firebase/app"
+import config from "./config/firebase"
+
 import { livro, cadastro, atualizacad, dellivro } from './home/home';
 import { autor, cadautor, atucadautor, delautor } from './home/autores';
 import {
@@ -18,6 +21,8 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+initializeApp(config.firebaseConfig)
+
 
 mongoose.connect(process.env.CONEXAO_DB || '');
 

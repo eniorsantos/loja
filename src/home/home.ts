@@ -18,12 +18,12 @@ interface cadastroBody {
   preco: number;
   autor: string;
   categoria: string;
-  usuario: number; 
+  usuario: number;
 }
 
 type Decoder = {
   id: number;
-}
+};
 
 export const cadastro = async (request: Request, response: Response) => {
   try {
@@ -31,11 +31,21 @@ export const cadastro = async (request: Request, response: Response) => {
 
     const token = request.headers?.authorization || '';    
 
-    const validador = jwt.verify(token, process.env.SECRET_KEY || '') as  Decoder
+    const validador = jwt.verify(
+      token,
+      process.env.SECRET_KEY || ''
+    ) as Decoder;
 
-    cad.usuario = validador.id
+    cad.usuario = validador.id;    
 
-    await livroSchema.create({cad});
+    await livroSchema.create({
+      nome: cad.nome,
+      isdn: cad.isdn,
+      preco: cad.preco,
+      autor: cad.autor,
+      categoria: cad.categoria,
+      usuario: cad.usuario,
+    });
     return response.status(201).json({ message: 'ok' });
   } catch (error) {
     return response
