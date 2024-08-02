@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import livroSchema from '../model/livroModel';
 import jwt from 'jsonwebtoken';
 
+import {ref, getStorage, getDownloadURL, uploadBytesResumable} from "firebase/storage"
+
 export const livro = async (request: Request, response: Response) => {
   try {
     const livros = await livroSchema.find();
@@ -16,6 +18,7 @@ interface cadastroBody {
   nome: string;
   isdn: number;
   preco: number;
+  linkimagem: string;
   autor: string;
   categoria: string;
   usuario: number;
@@ -26,10 +29,18 @@ type Decoder = {
 };
 
 export const cadastro = async (request: Request, response: Response) => {
-  try {
+  
     const cad: cadastroBody = request.body;
 
-    const token = request.headers?.authorization || '';    
+    const image = request.file;
+
+    const token = request.headers?.authorization || '';
+    
+    const storage = getStorage();
+
+  try {
+
+    
 
     const validador = jwt.verify(
       token,
@@ -42,6 +53,7 @@ export const cadastro = async (request: Request, response: Response) => {
       nome: cad.nome,
       isdn: cad.isdn,
       preco: cad.preco,
+      linkimagem: cad.linkimagem,
       autor: cad.autor,
       categoria: cad.categoria,
       usuario: cad.usuario,

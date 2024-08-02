@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import {initializeApp} from "firebase/app"
 import config from "./config/firebase"
+import multer from "multer"
 
 import { livro, cadastro, atualizacad, dellivro } from './home/home';
 import { autor, cadautor, atucadautor, delautor } from './home/autores';
@@ -22,6 +23,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 initializeApp(config.firebaseConfig)
+
+const update = multer({storage: multer.memoryStorage()})
 
 
 mongoose.connect(process.env.CONEXAO_DB || '');
@@ -56,7 +59,7 @@ app.delete('/delcategoria', delcategoria);
 
 app.get('/livro', jwtverify, livro);
 
-app.post('/cadastro', jwtverify, cadastro);
+app.post('/cadastro', jwtverify,update.single("filename"), cadastro);
 
 app.put('/atualizacad', atualizacad);
 
