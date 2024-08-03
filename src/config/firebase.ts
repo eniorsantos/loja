@@ -1,3 +1,7 @@
+import dontenv from "dotenv"
+
+dontenv.config()
+
 export default {
   firebaseConfig: {
     apiKey: process.env.API_KEY_FIREBASE,
