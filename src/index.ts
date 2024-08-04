@@ -4,7 +4,7 @@ import {initializeApp} from "firebase/app"
 import config from "./config/firebase"
 import multer from "multer"
 
-import { livro, cadastro, atualizacad, dellivro } from './home/home';
+import { livro, cadastro, atualizacad, dellivro, livrorecentes, livroporcategoria } from './home/home';
 import { autor, cadautor, atucadautor, delautor } from './home/autores';
 import {
   categoria,
@@ -37,13 +37,13 @@ app.listen(3333, () => {
 
 // GERENCIA AUTOR
 
-app.get('/autor', jwtverify, autor);
+app.get('/autor', jwtverify,autor);
 
-app.post('/cadautor', cadautor);
+app.post('/cadautor',jwtverify, cadautor);
 
-app.put('/atucadautor', atucadautor);
+app.put('/atucadautor/:id',jwtverify, atucadautor);
 
-app.delete('/delautor', delautor);
+app.delete('/delautor/:id', jwtverify,delautor);
 
 //GERENCIA CATEGORIA
 
@@ -51,19 +51,23 @@ app.get('/categoria', jwtverify, categoria);
 
 app.post('/cadcategoria', jwtverify, cadcategoria);
 
-app.put('/atucategoria', atucategoria);
+app.put('/atucategoria/:id', jwtverify,atucategoria);
 
-app.delete('/delcategoria', delcategoria);
+app.delete('/delcategoria/:id', jwtverify,delcategoria);
 
 // GERENCIA LIVRO
 
 app.get('/livro', jwtverify, livro);
 
+app.get('/livrorecentes', jwtverify, livrorecentes);
+
+app.get('/livroporcategoria/:categoria', jwtverify, livroporcategoria);
+
 app.post('/cadastro', jwtverify,update.single("filename"), cadastro);
 
-app.put('/atualizacad', atualizacad);
+app.put('/atualizacad/:id',jwtverify, update.single("filename"), atualizacad);
 
-app.delete('/dellivro', dellivro);
+app.delete('/dellivro/:id',jwtverify, dellivro);
 
 // GERENCIA USUARIO
 

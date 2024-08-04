@@ -30,10 +30,29 @@ export const cadcategoria = async (request: Request, response: Response) => {
 };
 
 
-export const atucategoria = (request: Request, response: Response) => {
-  return response.status(200).json({ message: 'ok' });
+export const atucategoria = async(request: Request, response: Response) => {
+  try {
+    
+
+    await categoriaSchema.findByIdAndUpdate({_id:request.params.id},{nome:request.body.nome})
+
+    return response.status(201).json({ message: 'ok' });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: 'Erro ao atualizar casdastro! ' + error });
+  }
 };
 
-export const delcategoria = (request: Request, response: Response) => {
-  return response.status(200).json({ message: 'ok' });
+export const delcategoria = async(request: Request, response: Response) => {
+  try {
+    
+
+    await categoriaSchema.findByIdAndDelete({_id:request.params.id})
+    return response.status(201).json({ message: 'ok' });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: 'Erro ao deletar casdastro! ' + error });
+  }
 };
