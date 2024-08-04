@@ -9,6 +9,9 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 
+
+// Requisições de Busca de livros  
+
 export const livro = async (request: Request, response: Response) => {
   const nomeProduto = request.query?.nomeProduto as string;
 
@@ -48,6 +51,9 @@ export const livroporcategoria = async (
   }
 };
 
+
+// Cria tipos temporarios
+
 interface cadastroBody {
   nome: string;
   isdn: number;
@@ -61,6 +67,8 @@ interface cadastroBody {
 type Decoder = {
   id: number;
 };
+
+// Requiesições de CADASTRO / ATUALIZAÇÃO E DELETE
 
 export const cadastro = async (request: Request, response: Response) => {
   const storage = getStorage();
@@ -117,32 +125,47 @@ export const cadastro = async (request: Request, response: Response) => {
 };
 
 export const atualizacad = async (request: Request, response: Response) => {
-  const storage = getStorage();
-
-  const cad: cadastroBody = request.body;
-
-  const token = request.headers?.authorization || "";
-
-  const image = request.file;
-
-  console.log(request.params.id)
-  console.log(cad)
-
+  const cad = request.body;
   try {
+    const livroatu = await livroSchema.findById(request.params.id);
+
+    if (!livroatu) {
+      return response.status(404).json({ message: " Livro nao encontrado" });
+    }
+
+    const token = request.headers?.authorization || "";
+
+    if (!token) {
+      return response.status(40).json({ message: " Usuario sem autorização" });
+    }
+
+    const image = request.file;
+
+    const validador = jwt.verify(
+      token,
+      process.env.SECRET_KEY || ""
+    ) as Decoder;
+
+    const isUserValid = livroatu.usuario.toString() === String(validador.id);
+
+    if (!isUserValid) {
+      return response.status(40).json({ message: " Usuario sem autorização" });
+    }
 
     if (!request.file) {
-      await livroSchema.findByIdAndUpdate({ _id: request.params.id }, { cad });
+      await livroSchema.findByIdAndUpdate(livroatu, cad);
       return response.status(200).json({ message: "ok" });
     }
+
     if (!request.file?.buffer) {
       return response.status(400).json({ message: "Envie uma imagem valida" });
     }
 
+    const storage = getStorage();
     const storeageRef = ref(
       storage,
       `files/${request.file?.originalname}${Date.now()}`
     );
-
     const snapshot = await uploadBytesResumable(
       storeageRef,
       request.file?.buffer,
@@ -154,24 +177,46 @@ export const atualizacad = async (request: Request, response: Response) => {
     const downloadUrl = await getDownloadURL(snapshot.ref);
 
     cad.linkimagem = downloadUrl;
-    console.log(request.params.id)
-  console.log(cad)
-
-    await livroSchema.findByIdAndUpdate({ _id:request.params.id }, { cad });
+   
+    await livroSchema.findByIdAndUpdate({ _id: request.params.id }, { cad });
     return response.status(200).json({ message: "ok" });
   } catch (error) {
     return response
       .status(500)
-      .json({ message: "Erro ao excluir o livro! " + error });
+      .json({ message: "Erro ao atualizar  livro! " + error });
   }
 };
 
 export const dellivro = async (request: Request, response: Response) => {
   try {
-    await livroSchema.findByIdAndDelete({ _id: request.params.id });
+    const livroatu = await livroSchema.findById(request.params.id);
 
-    return response.status(201).json({ message: "ok" });
-  } catch (error) {
+    if (!livroatu) {
+      return response.status(404).json({ message: " Livro nao encontrado" });
+    }
+
+    const token = request.headers?.authorization || "";
+
+    if (!token) {
+      return response.status(40).json({ message: " Usuario sem autorização" });
+    }
+    
+    const validador = jwt.verify(
+      token,
+      process.env.SECRET_KEY || ""
+    ) as Decoder;
+
+    const isUserValid = livroatu.usuario.toString() === String(validador.id);
+
+    if (!isUserValid) {
+      return response.status(40).json({ message: " Usuario sem autorização" });
+    }
+
+    await livroSchema.findByIdAndDelete(livroatu);
+    return response.status(200).json({ message: "ok" });
+
+  }catch(error){
+
     return response
       .status(500)
       .json({ message: "Erro ao deletar livro! " + error });

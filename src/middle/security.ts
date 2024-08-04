@@ -1,3 +1,5 @@
+// FUNÇÃO PARA CONTROLE E AUTENTICAÇÃO DE USUARIO
+
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 

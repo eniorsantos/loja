@@ -1,6 +1,8 @@
 import{Request, Response} from "express"
 import categoriaSchema from "../model/categoriaModel"
 
+// Requisições Busca
+
 export const categoria = async (request: Request, response: Response) => {
   try {
     const categorias = await categoriaSchema.find();
@@ -14,6 +16,8 @@ export const categoria = async (request: Request, response: Response) => {
 interface Categoria{
   nome: string
 }
+
+// Requisições Cadastro/ Atualização/ Delete
 
 export const cadcategoria = async (request: Request, response: Response) => {
   try {

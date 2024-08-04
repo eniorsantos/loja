@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import autorSchema from "../model/autorModel";
 
+// Requisições Busca
+
 export const autor = async (request: Request, response: Response) => {
   try {
     const autores = await autorSchema.find();
@@ -14,6 +16,8 @@ export const autor = async (request: Request, response: Response) => {
 type Autor = {
   nome: string;
 };
+
+// Requisições Cadastro/ Atualização/ Delete
 
 export const cadautor = async (request: Request, response: Response) => {
   const autor: Autor = request.body;

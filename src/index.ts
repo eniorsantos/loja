@@ -29,13 +29,15 @@ const update = multer({storage: multer.memoryStorage()})
 
 mongoose.connect(process.env.CONEXAO_DB || '');
 
-// GERENCIA PORTA
+// Inicializaçao Servidor
 
-app.listen(3333, () => {
+app.listen(process.env.PORT, () => {
   console.log('Executando');
 });
 
-// GERENCIA AUTOR
+
+
+// Rotas para gerenciamanto de AUTOR
 
 app.get('/autor', jwtverify,autor);
 
@@ -45,7 +47,9 @@ app.put('/atucadautor/:id',jwtverify, atucadautor);
 
 app.delete('/delautor/:id', jwtverify,delautor);
 
-//GERENCIA CATEGORIA
+
+
+//Rotas para gerenciamanto de CATEGORIA
 
 app.get('/categoria', jwtverify, categoria);
 
@@ -55,7 +59,9 @@ app.put('/atucategoria/:id', jwtverify,atucategoria);
 
 app.delete('/delcategoria/:id', jwtverify,delcategoria);
 
-// GERENCIA LIVRO
+
+
+// Rotas para gerenciamanto de LIVRO
 
 app.get('/livro', jwtverify, livro);
 
@@ -69,7 +75,10 @@ app.put('/atualizacad/:id',jwtverify, update.single("filename"), atualizacad);
 
 app.delete('/dellivro/:id',jwtverify, dellivro);
 
-// GERENCIA USUARIO
+
+
+
+// Rotas para gerenciamanto de USUARIO
 
 app.post('/registro', register);
 
